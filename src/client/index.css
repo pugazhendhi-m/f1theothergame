@@ -1,1 +1,1194 @@
 @import 'tailwindcss';
+
+/* Performance Optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* Hardware acceleration for animations */
+.control-button,
+.car-position,
+.progress-fill,
+.race-timer,
+.game-controls {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Optimize touch interactions */
+.control-button {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .control-button,
+  .car-position,
+  .progress-fill,
+  .checkpoint-marker {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .control-button.green {
+    animation: none !important;
+  }
+  
+  .active-checkpoint {
+    animation: none !important;
+  }
+}
+/* Control Interface Styles */
+.control-interface {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 20px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.control-button {
+  pointer-events: all;
+  width: 100px;
+  height: 100px;
+  border: 3px solid #333;
+  border-radius: 15px;
+  background: #222;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-button:focus {
+  outline: none;
+}
+
+.control-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button States */
+.control-button.red {
+  background: #cc2936;
+  border-color: #a01e28;
+  box-shadow: 0 4px 8px rgba(204, 41, 54, 0.3);
+}
+
+.control-button.green {
+  background: #2ecc40;
+  border-color: #27a833;
+  box-shadow: 0 4px 8px rgba(46, 204, 64, 0.3);
+  animation: pulse-green 0.5s ease-in-out infinite alternate;
+}
+
+.control-button.red:active {
+  background: #a01e28;
+  transform: scale(0.95);
+}
+
+.control-button.green:active {
+  background: #27a833;
+  transform: scale(0.95);
+}
+
+/* Button Content */
+.button-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.button-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.button-label {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.button-status {
+  font-size: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 2px 0;
+}
+
+.button-keys {
+  font-size: 10px;
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+/* Brake Button Positioning */
+.brake-button {
+  margin-right: auto;
+}
+
+/* Acceleration Button Positioning */
+.acceleration-button {
+  margin-left: auto;
+}
+
+/* Pulse Animation for Active State */
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 4px 8px rgba(46, 204, 64, 0.3);
+  }
+  100% {
+    box-shadow: 0 4px 16px rgba(46, 204, 64, 0.6);
+  }
+}
+
+/* Success Flash Animation */
+@keyframes success-flash {
+  0% {
+    background: #2ecc40;
+    transform: scale(1);
+  }
+  50% {
+    background: #fff;
+    transform: scale(1.1);
+  }
+  100% {
+    background: #cc2936;
+    transform: scale(1);
+  }
+}
+
+.control-button.success-flash {
+  animation: success-flash 0.3s ease-out;
+}
+
+/* Pressed state feedback */
+.control-button.pressed {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Responsive - Enhanced Touch Targets */
+@media (max-width: 1024px) {
+  .control-interface {
+    padding: 20px;
+    height: 120px;
+  }
+  
+  .control-button {
+    width: 90px;
+    height: 90px;
+    border-radius: 15px;
+    /* Ensure minimum 44px touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  .control-interface {
+    padding: 20px;
+    height: 110px;
+  }
+  
+  .control-button {
+    width: 85px;
+    height: 85px;
+    border-radius: 12px;
+    /* Enhanced touch targets for tablets */
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  .button-icon {
+    font-size: 22px;
+  }
+  
+  .button-label {
+    font-size: 11px;
+  }
+  
+  .button-keys {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .control-interface {
+    padding: 15px;
+    height: 100px;
+  }
+  
+  .control-button {
+    width: 75px;
+    height: 75px;
+    border-radius: 12px;
+    /* Optimal mobile touch targets */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .button-icon {
+    font-size: 20px;
+  }
+  
+  .button-label {
+    font-size: 10px;
+  }
+  
+  .button-keys {
+    display: none; /* Hide key hints on mobile */
+  }
+}
+
+@media (max-width: 360px) {
+  .control-interface {
+    padding: 12px;
+    height: 95px;
+  }
+  
+  .control-button {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    /* Maintain accessibility on small screens */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .button-icon {
+    font-size: 18px;
+  }
+  
+  .button-label {
+    font-size: 9px;
+  }
+}
+
+/* Game Display Styles */
+.game-display {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto;
+  gap: 10px;
+  z-index: 50;
+  pointer-events: none;
+  align-items: start;
+  max-height: calc(100vh - 140px); /* Leave space for controls */
+}
+
+/* Grid Layout Columns */
+.left-column, .center-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.left-column {
+  align-items: flex-start;
+}
+
+.center-column {
+  align-items: center;
+}
+
+.right-column {
+  align-items: flex-end;
+}
+
+/* Race Timer */
+.race-timer {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.timer-label {
+  font-size: 12px;
+  color: #ccc;
+  margin-bottom: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.timer-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2ecc40;
+  font-family: 'Courier New', monospace;
+}
+
+/* Distance Display */
+.distance-display {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  min-width: 140px;
+}
+
+.distance-label {
+  font-size: 11px;
+  color: #ccc;
+  margin-bottom: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.distance-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc40, #27a833);
+  transition: width 0.1s ease;
+}
+
+.progress-percentage {
+  font-size: 10px;
+  color: #aaa;
+}
+
+/* Speed Display */
+.speed-display {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  min-width: 140px;
+}
+
+.speed-label {
+  font-size: 11px;
+  color: #ccc;
+  margin-bottom: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.speed-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.speed-value.moving {
+  color: #2ecc40;
+}
+
+.speed-value.stopped {
+  color: #cc2936;
+}
+
+/* Next Checkpoint */
+.next-checkpoint {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 2px solid #333;
+}
+
+.checkpoint-label {
+  font-size: 10px;
+  color: #ccc;
+  margin-bottom: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.checkpoint-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkpoint-type {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkpoint-type.brake {
+  color: #cc2936;
+}
+
+.checkpoint-type.straight {
+  color: #2ecc40;
+}
+
+.checkpoint-distance {
+  font-size: 11px;
+  color: #aaa;
+}
+
+/* Active Checkpoint Indicator */
+.active-checkpoint {
+  text-align: center;
+  background: rgba(46, 204, 64, 0.9);
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 2px solid #27a833;
+  animation: pulse-active 0.5s ease-in-out infinite alternate;
+}
+
+.active-checkpoint .checkpoint-label {
+  font-size: 10px;
+  color: #fff;
+  margin-bottom: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.active-checkpoint .checkpoint-type {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+@keyframes pulse-active {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 8px rgba(46, 204, 64, 0.4);
+  }
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(46, 204, 64, 0.6);
+  }
+}
+
+
+
+/* Mobile Responsive - Enhanced Layout */
+@media (max-width: 1024px) {
+  .game-display {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+  
+  .race-timer {
+    padding: 10px 18px;
+  }
+  
+  .timer-value {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-display {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+      "timer timer"
+      "speed distance";
+  }
+  
+  .center-column {
+    grid-area: timer;
+    align-items: center;
+  }
+  
+  .left-column {
+    grid-area: speed;
+    align-items: center;
+  }
+  
+  .right-column {
+    grid-area: distance;
+    align-items: center;
+  }
+  
+  .race-timer {
+    padding: 8px 16px;
+  }
+  
+  .timer-value {
+    font-size: 22px;
+  }
+  
+  .distance-display, .speed-display {
+    padding: 8px 12px;
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .game-controls {
+    bottom: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-display {
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    gap: 5px;
+  }
+  
+  .race-timer {
+    padding: 6px 14px;
+  }
+  
+  .timer-value {
+    font-size: 20px;
+  }
+  
+  .distance-display, .speed-display {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .distance-value, .speed-value {
+    font-size: 14px;
+  }
+  
+  .game-controls {
+    bottom: 110px;
+  }
+  
+  .start-button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .game-display {
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    gap: 4px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: 
+      "timer"
+      "speed"
+      "distance";
+  }
+  
+  .center-column, .left-column, .right-column {
+    align-items: center;
+  }
+  
+  .race-timer {
+    padding: 6px 12px;
+  }
+  
+  .timer-value {
+    font-size: 18px;
+  }
+  
+  .distance-display, .speed-display {
+    padding: 5px 8px;
+    font-size: 11px;
+    max-width: 200px;
+  }
+  
+  .distance-value, .speed-value {
+    font-size: 13px;
+  }
+  
+  .game-controls {
+    bottom: 105px;
+  }
+  
+  .start-button {
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+}
+/* F1 Game Main Styles */
+.f1-game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+  color: white;
+}
+
+/* Game Background */
+.game-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Track Visualization */
+.track-visualization {
+  position: relative;
+  width: 70%;
+  height: 24px;
+  background: #333;
+  border-radius: 12px;
+  border: 2px solid #555;
+  overflow: hidden;
+  margin-top: 20px; /* Add space from top elements */
+}
+
+.track-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #fff 0px,
+    #fff 20px,
+    transparent 20px,
+    transparent 40px
+  );
+  transform: translateY(-50%);
+}
+
+.car-position {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  transition: left 0.1s ease;
+  z-index: 10;
+}
+
+/* Checkpoint Markers */
+.checkpoint-marker {
+  position: absolute;
+  top: -30px;
+  transform: translateX(-50%);
+  font-size: 16px;
+  z-index: 5;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.checkpoint-marker:hover {
+  opacity: 1;
+}
+
+.brake-marker {
+  color: #cc2936;
+}
+
+.straight-marker {
+  color: #2ecc40;
+}
+
+/* Game Controls */
+.game-controls {
+  position: fixed;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.start-button {
+  background: #2ecc40;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(46, 204, 64, 0.3);
+}
+
+.start-button:hover {
+  background: #27a833;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(46, 204, 64, 0.4);
+}
+
+.start-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(46, 204, 64, 0.3);
+}
+
+/* Race Complete Overlay */
+.race-complete-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s ease;
+}
+
+.race-complete-content {
+  background: #222;
+  padding: 40px;
+  border-radius: 15px;
+  border: 3px solid #333;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.race-complete-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: #2ecc40;
+}
+
+.final-time {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #2ecc40;
+  font-family: 'Courier New', monospace;
+}
+
+
+
+.restart-button {
+  background: #2ecc40;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.restart-button:hover {
+  background: #27a833;
+  transform: translateY(-2px);
+}
+
+.restart-button:active {
+  transform: translateY(0);
+}
+
+/* Error Boundary Styles */
+.error-boundary {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.error-content {
+  background: #222;
+  padding: 40px;
+  border-radius: 15px;
+  border: 3px solid #cc2936;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  color: white;
+}
+
+.error-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: #cc2936;
+}
+
+.error-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #ccc;
+}
+
+.error-details {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.error-details p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.error-details details {
+  margin-top: 10px;
+}
+
+.error-details summary {
+  cursor: pointer;
+  color: #2ecc40;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.error-details pre {
+  background: #000;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+  color: #ccc;
+  white-space: pre-wrap;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.restart-button, .reload-button {
+  background: #2ecc40;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.reload-button {
+  background: #cc2936;
+}
+
+.restart-button:hover {
+  background: #27a833;
+  transform: translateY(-2px);
+}
+
+.reload-button:hover {
+  background: #a01e28;
+  transform: translateY(-2px);
+}
+
+.restart-button:active, .reload-button:active {
+  transform: translateY(0);
+}
+
+/* Network Error Styles */
+.network-error {
+  background: rgba(204, 41, 54, 0.1);
+  border: 2px solid #cc2936;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.network-error-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #cc2936;
+  margin-bottom: 8px;
+}
+
+.network-error-message {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.retry-button {
+  background: #cc2936;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.retry-button:hover {
+  background: #a01e28;
+}
+
+/* Performance Warning Styles */
+.performance-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 2px solid #ffc107;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.performance-warning-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffc107;
+  margin-bottom: 6px;
+}
+
+.performance-warning-message {
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile Responsive - Enhanced Track and Completion */
+@media (max-width: 1024px) {
+  .track-visualization {
+    width: 85%;
+    height: 18px;
+  }
+  
+  .car-position {
+    font-size: 22px;
+  }
+  
+  .checkpoint-marker {
+    font-size: 14px;
+    top: -25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-controls {
+    bottom: 120px;
+  }
+  
+  .start-button {
+    padding: 12px 22px;
+    font-size: 14px;
+    /* Enhanced touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .track-visualization {
+    width: 88%;
+    height: 16px;
+  }
+  
+  .car-position {
+    font-size: 20px;
+  }
+  
+  .checkpoint-marker {
+    font-size: 12px;
+    top: -22px;
+  }
+  
+  .race-complete-content {
+    padding: 32px 24px;
+    max-width: 350px;
+  }
+  
+  .race-complete-content h2 {
+    font-size: 26px;
+  }
+  
+  .final-time {
+    font-size: 28px;
+  }
+  
+  .restart-button {
+    padding: 12px 24px;
+    font-size: 15px;
+    /* Enhanced touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-controls {
+    bottom: 110px;
+  }
+  
+  .start-button {
+    padding: 10px 18px;
+    font-size: 13px;
+    /* Maintain touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .track-visualization {
+    width: 92%;
+    height: 14px;
+  }
+  
+  .car-position {
+    font-size: 18px;
+  }
+  
+  .checkpoint-marker {
+    font-size: 10px;
+    top: -20px;
+  }
+  
+  .race-complete-content {
+    padding: 28px 20px;
+    max-width: 320px;
+  }
+  
+  .race-complete-content h2 {
+    font-size: 22px;
+  }
+  
+  .final-time {
+    font-size: 24px;
+  }
+  
+  .restart-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    /* Maintain touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 360px) {
+  .game-controls {
+    bottom: 105px;
+  }
+  
+  .start-button {
+    padding: 8px 16px;
+    font-size: 12px;
+    /* Maintain touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .track-visualization {
+    width: 95%;
+    height: 12px;
+  }
+  
+  .car-position {
+    font-size: 16px;
+  }
+  
+  .checkpoint-marker {
+    font-size: 9px;
+    top: -18px;
+  }
+  
+  .race-complete-content {
+    padding: 24px 16px;
+    max-width: 300px;
+  }
+  
+  .race-complete-content h2 {
+    font-size: 20px;
+  }
+  
+  .final-time {
+    font-size: 20px;
+  }
+  
+  .restart-button {
+    padding: 8px 18px;
+    font-size: 13px;
+    /* Maintain touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
